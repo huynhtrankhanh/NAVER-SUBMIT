@@ -1,1 +1,1 @@
-The calendar view provides a visual timeline of all your deadlines and tasks, helping you plan your time effectively and avoid scheduling conflicts.
+The calendar seamlessly integrates everything. Watch tasks populate, deadlines align, and scheduling conflicts resolve automatically as you interact.

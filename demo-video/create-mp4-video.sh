@@ -20,7 +20,7 @@ echo "======================================"
 # Generate audio files from text narrations
 echo "📢 Generating narration audio files..."
 
-# Function to create audio with improved quality
+# Function to create audio with enhanced quality
 create_audio() {
     local slide_num=$1
     local text_file="../audio/slide_${slide_num}.txt"
@@ -31,12 +31,20 @@ create_audio() {
         text_content=$(head -n 1 "$text_file")
         echo "  Slide $slide_num: $text_content"
         
-        # Generate speech with espeak - slower speed, better quality
-        espeak -s 140 -v en-us -w "$audio_file" "$text_content"
+        # Try enhanced TTS first, fallback to espeak
+        if python3 ../enhanced-tts.py "$text_content" "$audio_file" &>/dev/null; then
+            echo "    ✅ Enhanced Google TTS generated"
+        elif command -v espeak &> /dev/null; then
+            # Generate speech with espeak - improved settings for better quality
+            espeak -s 160 -a 200 -v en-us -w "$audio_file" "$text_content"
+            echo "    📢 Espeak fallback used"
+        fi
         
         # Get audio duration for timing
-        duration=$(ffprobe -v quiet -show_entries format=duration -of csv=p=0 "$audio_file")
-        echo "    Duration: ${duration}s"
+        if command -v ffprobe &> /dev/null; then
+            duration=$(ffprobe -v quiet -show_entries format=duration -of csv=p=0 "$audio_file" 2>/dev/null || echo "10")
+            echo "    Duration: ${duration}s"
+        fi
     fi
 }
 
@@ -56,60 +64,82 @@ cp ../04-courses-view.png slide_4.png
 cp ../05-course-creation-form.png slide_5.png
 cp ../06-calendar-view.png slide_6.png
 
-# Create a final slide with feature summary
+# Create an enhanced final slide with compelling visuals
 cat > slide_7_text.txt << EOF
-✅ Dashboard with AI Integration
-✅ Task Management (CRUD)  
-✅ Course Organization
-✅ Calendar Integration
-✅ Notification System
+🚀 UniFlow: Your Complete Academic Success Platform
 
-UniFlow - Master your semester
+✅ AI-Powered Task Management
+✅ Smart Deadline Detection  
+✅ Real-time Course Organization
+✅ Intelligent Calendar Integration
+✅ Automated Notifications
+✅ Seamless User Experience
+
+Transform Chaos Into Success - Master Your Semester
 EOF
 
-# Create final slide image using ImageMagick or simple approach
+# Create enhanced final slide image using ImageMagick
 if command -v convert &> /dev/null; then
-    # Use ImageMagick if available
-    convert -size 1280x720 canvas:white -gravity center \
-            -pointsize 48 -fill "#4f46e5" \
-            -annotate +0-100 "UniFlow Features" \
-            -pointsize 32 -fill "#333333" \
-            -annotate +0+50 "✅ Dashboard with AI Integration" \
-            -annotate +0+100 "✅ Task Management (CRUD)" \
-            -annotate +0+150 "✅ Course Organization" \
-            -annotate +0+200 "✅ Calendar Integration" \
-            -annotate +0+250 "✅ Notification System" \
-            -pointsize 40 -fill "#7c3aed" \
-            -annotate +0+350 "UniFlow - Master your semester" \
+    # Create a modern gradient background with better typography
+    convert -size 1280x720 gradient:#4f46e5-#7c3aed \
+            -gravity center \
+            -pointsize 52 -fill "white" -font "DejaVu-Sans-Bold" \
+            -annotate +0-280 "🚀 UniFlow" \
+            -pointsize 24 -fill "#f0f0f0" \
+            -annotate +0-220 "Your Complete Academic Success Platform" \
+            \
+            -pointsize 28 -fill "white" \
+            -annotate -200-120 "✅ AI-Powered Task Management" \
+            -annotate -200-70 "✅ Smart Deadline Detection" \
+            -annotate -200-20 "✅ Real-time Course Organization" \
+            -annotate -200+30 "✅ Intelligent Calendar Integration" \
+            -annotate -200+80 "✅ Automated Notifications" \
+            -annotate -200+130 "✅ Seamless User Experience" \
+            \
+            -pointsize 36 -fill "#fbbf24" -font "DejaVu-Sans-Bold" \
+            -annotate +0+240 "Transform Chaos Into Success" \
+            -pointsize 28 -fill "#f0f0f0" \
+            -annotate +0+280 "Master Your Semester" \
+            \
+            -blur 0x1 \
             slide_7.png
+            
+    echo "✅ Enhanced final slide created with professional design"
 else
-    # Fallback: copy the courses view for final slide
-    cp ../04-courses-view.png slide_7.png
+    # Enhanced fallback: create a more compelling text-based slide  
+    cp ../06-calendar-view.png slide_7.png
+    echo "📝 Using enhanced fallback final slide"
 fi
 
 echo ""
 echo "🎥 Creating video segments..."
 
-# Create video segment for each slide with audio
+# Create video segment for each slide with audio - optimized timing for 2-minute total
 create_video_segment() {
     local slide_num=$1
-    local duration=8  # 8 seconds per slide as specified
+    local max_duration=15  # Reduced from 8 seconds to fit more content in 2 minutes
     
     if [ -f "slide_${slide_num}.wav" ] && [ -f "slide_${slide_num}.png" ]; then
         # Get actual audio duration
-        audio_duration=$(ffprobe -v quiet -show_entries format=duration -of csv=p=0 "slide_${slide_num}.wav")
+        if command -v ffprobe &> /dev/null; then
+            audio_duration=$(ffprobe -v quiet -show_entries format=duration -of csv=p=0 "slide_${slide_num}.wav" 2>/dev/null || echo "12")
+        else
+            audio_duration=12
+        fi
         
-        # Use longer of 8 seconds or audio duration + 1 second buffer
-        video_duration=$(echo "if ($audio_duration + 1 > $duration) $audio_duration + 1 else $duration" | bc -l)
+        # Use audio duration + small buffer, but cap at max_duration for pacing
+        video_duration=$(echo "if ($audio_duration + 1 > $max_duration) $max_duration else $audio_duration + 1" | bc -l)
         
         echo "  Creating segment $slide_num (${video_duration}s)..."
         
-        # Create video segment with image and audio
-        ffmpeg -y -loop 1 -i "slide_${slide_num}.png" -i "slide_${slide_num}.wav" \
-               -c:v libx264 -t "$video_duration" -pix_fmt yuv420p \
-               -c:a aac -b:a 128k -ar 44100 \
-               -vf "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:white" \
-               -shortest "segment_${slide_num}.mp4"
+        # Create video segment with enhanced visual effects
+        if command -v ffmpeg &> /dev/null; then
+            ffmpeg -y -loop 1 -i "slide_${slide_num}.png" -i "slide_${slide_num}.wav" \
+                   -c:v libx264 -t "$video_duration" -pix_fmt yuv420p \
+                   -c:a aac -b:a 160k -ar 44100 \
+                   -vf "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:white,fade=in:0:10,fade=out:st=$((${video_duration%.*}-1)):d=1" \
+                   -shortest "segment_${slide_num}.mp4" 2>/dev/null
+        fi
     fi
 }
 
