@@ -1,0 +1,1 @@
+Course management allows you to organize tasks by subject with custom color coding, making it easy to focus on specific classes and track progress.

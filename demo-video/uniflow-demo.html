@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniFlow - Demo Video</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+        
+        .video-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .slide {
+            position: absolute;
+            width: 90%;
+            max-width: 1200px;
+            height: 80%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.8s ease;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .slide-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        .slide-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .slide-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .slide-content {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .slide-image {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slide-text {
+            position: absolute;
+            bottom: -80px;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            text-align: center;
+        }
+        
+        .intro-slide .slide-content {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .feature-item {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4f46e5;
+        }
+        
+        .feature-item h3 {
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: #4f46e5;
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .slide-header h1 { font-size: 2rem; }
+            .slide-header p { font-size: 1rem; }
+            .slide { width: 95%; height: 85%; }
+            .slide-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="controls" id="controls">Slide 1 of 7 • Auto-playing</div>
+    
+    <div class="video-container">
+        <!-- Slide 1: Introduction -->
+        <div class="slide active intro-slide">
+            <div class="slide-header">
+                <h1>UniFlow</h1>
+                <p>Student Task Management System</p>
+            </div>
+            <div class="slide-content">
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <h3>🎯 Smart Task Management</h3>
+                        <p>AI-powered focus suggestions and priority handling</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>📚 Course Organization</h3>
+                        <p>Organize tasks by subjects with color coding</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>📅 Calendar Integration</h3>
+                        <p>Visual timeline of all deadlines and tasks</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>🔔 Smart Notifications</h3>
+                        <p>Automatic reminders 15 minutes before deadlines</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Dashboard View -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>Dashboard View</h1>
+                <p>Your command center for academic success</p>
+            </div>
+            <div class="slide-content">
+                <img src="01-dashboard-empty.png" alt="Dashboard View" class="slide-image">
+                <div class="slide-text">
+                    Clean, intuitive dashboard with AI Focus Suggestions and Deadline Collision Detection. 
+                    The system intelligently prioritizes your tasks and warns about potential scheduling conflicts.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Task Creation -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>Easy Task Creation</h1>
+                <p>Add tasks with just a few clicks</p>
+            </div>
+            <div class="slide-content">
+                <img src="02-task-creation-form.png" alt="Task Creation" class="slide-image">
+                <div class="slide-text">
+                    Simple, elegant form to create tasks with title, course assignment, due date, and priority level. 
+                    The system automatically schedules push notifications 15 minutes before each deadline.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: AI Features -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>AI-Powered Intelligence</h1>
+                <p>Smart suggestions based on priority and deadlines</p>
+            </div>
+            <div class="slide-content">
+                <img src="03-dashboard-with-task.png" alt="AI Suggestions" class="slide-image">
+                <div class="slide-text">
+                    The AI Focus Suggestion analyzes your tasks by urgency and importance, recommending what to work on next. 
+                    Tasks are automatically organized by due dates with visual priority indicators.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Course Management -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>Course Organization</h1>
+                <p>Organize tasks by subject for better management</p>
+            </div>
+            <div class="slide-content">
+                <img src="04-courses-view.png" alt="Course Management" class="slide-image">
+                <div class="slide-text">
+                    Create and manage courses with custom color tags. Tasks are automatically grouped by course, 
+                    making it easy to focus on specific subjects and track progress across different classes.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: Calendar View -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>Calendar Overview</h1>
+                <p>Visual timeline of all your deadlines</p>
+            </div>
+            <div class="slide-content">
+                <img src="06-calendar-view.png" alt="Calendar View" class="slide-image">
+                <div class="slide-text">
+                    Weekly calendar view provides a clear overview of upcoming deadlines and tasks. 
+                    Visual layout helps you plan your time effectively and avoid scheduling conflicts.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Conclusion -->
+        <div class="slide intro-slide">
+            <div class="slide-header">
+                <h1>UniFlow</h1>
+                <p>Master Your Semester</p>
+            </div>
+            <div class="slide-content">
+                <div style="text-align: center; max-width: 600px;">
+                    <h2 style="color: #1e293b; margin-bottom: 20px;">Key Features Summary</h2>
+                    <div style="text-align: left; font-size: 1.1rem; line-height: 2;">
+                        <p>✅ <strong>Full CRUD Operations</strong> - Complete task and course management</p>
+                        <p>✅ <strong>Persistent Storage</strong> - Data saved locally in browser</p>
+                        <p>✅ <strong>AI Integration</strong> - Smart suggestions and collision detection</p>
+                        <p>✅ <strong>Push Notifications</strong> - Automated deadline reminders</p>
+                        <p>✅ <strong>Responsive Design</strong> - Works on all devices</p>
+                        <p>✅ <strong>Time Management</strong> - Robust date and time handling</p>
+                    </div>
+                    <div style="margin-top: 30px; padding: 20px; background: #f1f5f9; border-radius: 10px;">
+                        <p style="font-size: 1.2rem; color: #4f46e5; font-weight: 600;">
+                            UniFlow - Your intelligent companion for academic success
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+        const controls = document.getElementById('controls');
+        let currentSlide = 0;
+        const slideDuration = 8000; // 8 seconds per slide
+        const totalDuration = slides.length * slideDuration;
+        
+        // Narration text for each slide
+        const narration = [
+            "Welcome to UniFlow, a comprehensive student task management system designed to help students organize coursework, track deadlines, and achieve academic success.",
+            "The Dashboard provides a clean, intuitive interface with AI-powered focus suggestions and deadline collision detection to help you prioritize your work effectively.",
+            "Creating tasks is simple and efficient. Just fill in the task details, select a course, set the due date and priority. The system automatically schedules notifications.",
+            "UniFlow's AI analyzes your tasks by urgency and importance, providing intelligent recommendations on what to focus on next, keeping you productive and organized.",
+            "Course management allows you to organize tasks by subject with custom color coding, making it easy to focus on specific classes and track progress.",
+            "The calendar view provides a visual timeline of all your deadlines and tasks, helping you plan your time effectively and avoid scheduling conflicts.",
+            "UniFlow combines intelligent task management, automated notifications, and beautiful design to be your complete academic companion. Master your semester with UniFlow."
+        ];
+        
+        function updateProgress() {
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = progress + '%';
+            controls.textContent = `Slide ${currentSlide + 1} of ${slides.length} • Auto-playing`;
+        }
+        
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            updateProgress();
+            
+            // Log narration to console (simulating text-to-speech)
+            console.log(`🎵 Narration: ${narration[index]}`);
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+            
+            // Reset to first slide after completing all slides
+            if (currentSlide === 0) {
+                setTimeout(() => {
+                    console.log('🎬 Video demonstration complete. Total duration: ~56 seconds');
+                }, slideDuration);
+            }
+        }
+        
+        // Auto-advance slides
+        setInterval(nextSlide, slideDuration);
+        
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                showSlide(currentSlide);
+            }
+        });
+        
+        // Initialize
+        updateProgress();
+        console.log('🚀 UniFlow Video Demo Started');
+        console.log('📋 Use arrow keys or spacebar to navigate manually');
+        console.log(`⏱️  Auto-advancing every ${slideDuration/1000} seconds`);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+The calendar view provides a visual timeline of all your deadlines and tasks, helping you plan your time effectively and avoid scheduling conflicts.
