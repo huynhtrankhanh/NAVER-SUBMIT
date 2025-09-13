@@ -1,0 +1,1 @@
+Creating tasks is simple and efficient. Just fill in the task details, select a course, set the due date and priority. The system automatically schedules notifications.
