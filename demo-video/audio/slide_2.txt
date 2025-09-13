@@ -1,1 +1,1 @@
-The Dashboard provides a clean, intuitive interface with AI-powered focus suggestions and deadline collision detection to help you prioritize your work effectively.
+The Dashboard instantly shows AI focus suggestions. See how it detects deadline collisions and prioritizes your most urgent assignments automatically.

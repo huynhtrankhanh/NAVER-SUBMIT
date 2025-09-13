@@ -1,1 +1,1 @@
-Welcome to UniFlow, a comprehensive student task management system designed to help students organize coursework, track deadlines, and achieve academic success.
+Welcome to UniFlow - your intelligent academic companion. Watch as we create tasks, manage courses, and leverage AI-powered insights in real-time.

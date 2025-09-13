@@ -1,1 +1,1 @@
-UniFlow's AI analyzes your tasks by urgency and importance, providing intelligent recommendations on what to focus on next, keeping you productive and organized.
+AI recommendations appear immediately. Watch as UniFlow analyzes task urgency, suggests optimal focus areas, and dynamically updates your productivity timeline.
