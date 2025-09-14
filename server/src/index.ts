@@ -1,12 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import schedule from 'node-schedule';
+import path from 'path';
 
 const app = express();
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
 
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from the client build directory
+const clientBuildPath = path.join(__dirname, '../../client/dist');
+app.use(express.static(clientBuildPath));
 
 // In-memory storage for scheduled jobs (Requirement 2: Persistent Storage - In-memory for notifications)
 const scheduledJobs = new Map<string, schedule.Job>();
@@ -17,8 +22,8 @@ const sendNotification = (message: string) => {
   // a push notification service (e.g., Firebase Cloud Messaging or Web Push API).
 };
 
-// POST /schedule (Requirement 7: Push Notification System)
-app.post('/schedule', (req, res) => {
+// POST /api/schedule (Requirement 7: Push Notification System)
+app.post('/api/schedule', (req, res) => {
   const { taskId, message, time } = req.body;
 
   if (!taskId || !message || !time) {
@@ -63,8 +68,8 @@ app.post('/schedule', (req, res) => {
   }
 });
 
-// POST /cancel (Handles Delete scenario)
-app.post('/cancel', (req, res) => {
+// POST /api/cancel (Handles Delete scenario)
+app.post('/api/cancel', (req, res) => {
   const { taskId } = req.body;
 
   if (!taskId) {
@@ -82,10 +87,24 @@ app.post('/cancel', (req, res) => {
   }
 });
 
-app.get('/', (req, res) => {
-    res.send(`UniFlow Notification Server is running. Active jobs: ${scheduledJobs.size}`);
+// API health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({ message: `UniFlow Notification Server is running. Active jobs: ${scheduledJobs.size}` });
+});
+
+// Catch-all handler: send back React's index.html file for SPA routing
+app.get('*', (req, res) => {
+  try {
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  } catch (error) {
+    console.error('Error serving client file:', error);
+    res.status(500).json({ error: 'Failed to serve client application' });
+  }
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 UniFlow Notification Server listening on http://localhost:${PORT}`);
+  console.log(`🚀 UniFlow Production Server listening on http://localhost:${PORT}`);
+  console.log(`📁 Serving static files from: ${clientBuildPath}`);
+  console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`📊 API endpoints: /api/health, /api/schedule, /api/cancel`);
 });
