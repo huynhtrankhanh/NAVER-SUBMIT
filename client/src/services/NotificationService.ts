@@ -2,7 +2,9 @@ import { Task } from "../models/types";
 import { subMinutes, parseISO } from "date-fns";
 
 // Ensure the backend server is running on this port
-const API_URL = 'http://localhost:5001';
+// In production, API calls will be made to the same host/port as the client
+// Vite replaces import.meta.env.PROD at build time
+const API_URL = import.meta.env.PROD ? '' : 'http://localhost:5001';
 
 /**
  * Schedules a notification for a task.
@@ -28,7 +30,7 @@ export const scheduleNotification = async (task: Task): Promise<boolean> => {
   };
 
   try {
-    const response = await fetch(`${API_URL}/schedule`, {
+    const response = await fetch(`${API_URL}/api/schedule`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -54,7 +56,7 @@ export const scheduleNotification = async (task: Task): Promise<boolean> => {
  */
 export const cancelNotification = async (taskId: string): Promise<boolean> => {
   try {
-    const response = await fetch(`${API_URL}/cancel`, {
+    const response = await fetch(`${API_URL}/api/cancel`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
